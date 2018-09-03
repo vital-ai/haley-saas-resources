@@ -20857,7 +20857,7 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 	
 	
 //	var url = PREFIX + 'js/lastform/lastform-public.unminified-2.1.0.27.js';
-	var url = CDN_PREFIX + 'js/lastform/dist/lastform-public.unminified-2.1.0.27.min.js';
+	var url = 'js/lastform/dist/lastform-public.unminified-2.1.0.27.min.js';
 //	var url = PREFIX + 'js/lastform/lastform-public.unminified-2.1.1.6.js';
 	
 	var qPage = this.currentPageMsg;
@@ -20870,7 +20870,7 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 		lfForm.button.text = "Submit";
 	}
 	
-	$.getScript( url , function(){
+	var onSuccess = function() {
 
 		console.log("lastform loaded");
 		
@@ -20891,7 +20891,27 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 //			$('.lf-nav-inner-continue').click();
 //		}, 1000);
 	
+	};
+	
+	$.ajax({
+		url: CDN_PREFIX + url,
+		dataType: "script",
+		cache: CDN_ENABLED,
+		success: onSuccess,
+		error: function(){
+			
+			$.ajax({
+				url: PREFIX + url,
+				dataType: "script",
+				cache: true,
+				success: onSuccess
+			});
+			
+		}
+		
 	});
+	
+	
 	
 }
 
