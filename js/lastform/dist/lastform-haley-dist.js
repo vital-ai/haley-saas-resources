@@ -20857,7 +20857,7 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 	
 	
 //	var url = PREFIX + 'js/lastform/lastform-public.unminified-2.1.0.27.js';
-	var url = PREFIX + 'js/lastform/dist/lastform-public.unminified-2.1.0.27.min.js';
+	var url = CDN_PREFIX + 'js/lastform/dist/lastform-public.unminified-2.1.0.27.min.js';
 //	var url = PREFIX + 'js/lastform/lastform-public.unminified-2.1.1.6.js';
 	
 	var qPage = this.currentPageMsg;
@@ -27153,7 +27153,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-//# sourceMappingURL=navigo.js.map
 ;
 //global navigo router
 var router = null;
