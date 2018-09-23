@@ -19303,9 +19303,9 @@ LastformWidget = function(parentEl) {
 	    		
 	    		if( window.LASTFORM_instance != null ) {
 	    			
-	    			console.log("Rewinding to first question:");
+//	    			console.log("Rewinding to first question:");
 	    			
-	    			window.LASTFORM_instance.changeActiveField(0);
+//	    			window.LASTFORM_instance.changeActiveField(0);
 	    			
 	    		}
 	    		
