@@ -8881,11 +8881,14 @@ LastformWidget = function(parentEl) {
 	    	
 	    	if(data.action == 'iframe-initialized') {
 	    		
+	    		var questionObjects = questionRL.iterator();
+	    		questionObjects.shift();
+	    		
 	    		//just send the previous value for the question
 	    		var obj = {
 	    			source: 'lastform-iframe',
-	    			action: 'previous-answer-value',
-	    			value: previousAnswer
+	    			action: 'input-question',
+	    			value: JSON.stringify(questionObjects)
 	    		};
 	    		
 	    		iframeEl.get(0).contentWindow.postMessage(obj, '*');
@@ -9916,10 +9919,12 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 			
 		} else if(q.type == AIMP_TreeQuestion) {
 			
+			var requiredClass = required ? 'lf-is-required-2' : '';
+			
 			var treeContent = '<div class="not-initialized" data-tree-question-uri="' + questionURI + '">' +
-				'<div class="lf-question"><i class="lfi-asterisk lf-question-icon-required"></i><i class="lfi-arrow_forward lf-question-icon-arrow"></i><span>' + label + '</span></div>' +
+				'<div class="lf-question ' + requiredClass + '"><i class="lfi-asterisk lf-question-icon-required"></i><i class="lfi-arrow_forward lf-question-icon-arrow"></i><span>' + label + '</span></div>' +
 				'<div class="tree-question"></div>' +
-				'<div class="lf-field-errors tree-errors"></div>' +
+				'<div class="lf-field-errors tree-errors" style="display: none;"></div>' +
 			'</div>'
 			
 			lfForm.fields.push({
@@ -10525,6 +10530,8 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 				//all iframe question types here
 			} else if(questionType == 'map') {
 
+				var requiredClass = required ? 'lf-is-required-2' : '';
+				
 				//keep previous value for update / form submission purposes
 				this.index2LastAnswer[i] = previousAnswer;
 				
@@ -10543,12 +10550,13 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 								
 				var t = $('<div>').append(
 				[ 
-				 $('<div>', {'class': 'lf-question'}).append(
+				 $('<div>', {'class': 'lf-question ' + requiredClass}).append(
 					[
 					 $('<i class="lfi-asterisk lf-question-icon-required"></i>'),
 					 $('<i class="lfi-arrow_forward lf-question-icon-arrow"></i>'),
 					 $('<span>').text(label)
 					]), 
+				 $('<ul>', {'class': 'lf-field-errors map-errors', 'style': 'display:none;'}),
 				 $('<div>', {'class': 'lf-content'}).append([
 				    descriptionEl,
 					$('<div>', {'class': "lf-content-wrapper"}).append(
@@ -10562,7 +10570,7 @@ LastformWidget.prototype.onFormQuestionsReady = function() {
 			        "id": i,
 			        "label": t,
 			        "adminLabel": "",
-			        "isRequired": false,
+			        "isRequired": required,
 			        "size": "medium",
 			        "errorMessage": "",
 			        "inputs": null,
@@ -12683,6 +12691,27 @@ LastformWidget.prototype.onQuestionErrorUpdate = function(questionIndex, errorMs
 		}
 	});
 	window.LASTFORM_controller.props.formStore.updateFormWasSubmited(!1);
+	
+	//manage custom question errors manually
+	var qRL = this.questionElements[questionIndex];
+	var q = qRL.results[1].graphObject;
+	if(vitaljs.isSubclassOf(q.type, AIMP_Question)) {
+		var qt = q.get('questionType');
+		if(q.type == AIMP_TreeQuestion || qt == 'map') {
+			var errorsEl = $('#lf-field-' + questionIndex + ' .lf-field-errors');
+			errorsEl.empty();
+			if(errorMsg != null) {
+				errorsEl.append($('<li>').append(
+				 [
+				  $('<i>', {'class': 'lfi-report'}),
+				  document.createTextNode(errorMsg)
+				 ]));
+				errorsEl.show();
+			} else {
+				errorsEl.hide();
+			}
+		}
+	}
 	
 	return changed;
 	
