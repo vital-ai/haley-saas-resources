@@ -12853,6 +12853,27 @@ LastformWidget.prototype.onAnswerUpdateMessage = function(msgRL) {
 //		}
 		
 		
+	} else if(questionType == 'map') {
+		
+		//remember the answer
+		this.index2LastAnswer[questionIndex] = newValue;
+		
+    	var iframeEl = $('[data-iframe-question-uri="' + questionURI + '"]');
+    	if(iframeEl.length == 0) {
+    		console.error("Iframe element for question not found: ", questionURI);
+    		return;
+    	}
+
+    	//notify iframe on value change
+   		var obj = {
+   			source: 'lastform-iframe',
+   			action: 'answer-value-changed',
+   			value: newValue
+   		};
+    		
+   		iframeEl.get(0).contentWindow.postMessage(obj, '*');
+		
+		
 	} else {
 		
 		console.error("Updating question " + questionType + " not supported");
