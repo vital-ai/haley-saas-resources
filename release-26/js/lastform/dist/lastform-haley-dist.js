@@ -12504,7 +12504,7 @@ LastformWidget.prototype.startPageCheckTimer = function(){
 	this.pageRequestTimeout = setTimeout(function(){
 		console.error("Page request timed out");
 		_this.onBrokenSessionDetected();
-	}, 20000);
+	}, 40000);
 }
 
 LastformWidget.prototype.onBrokenSessionDetected = function() {
